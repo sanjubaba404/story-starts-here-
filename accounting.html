@@ -1,0 +1,2543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Accounting Quest - 12 Level Game</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #06100b;
+    color: #eafff2;
+}
+
+header {
+    background: linear-gradient(135deg, #063b25, #08150e);
+    border-bottom: 2px solid #35ff91;
+    text-align: center;
+    padding: 25px;
+}
+
+header h1 {
+    margin: 0;
+    color: #35ff91;
+    font-size: 36px;
+}
+
+header p {
+    color: #a7d8bd;
+}
+
+.container {
+    width: 95%;
+    max-width: 1400px;
+    margin: 20px auto;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: #0b1b13;
+    border: 1px solid #286a49;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+}
+
+.stat span {
+    display: block;
+    color: #35ff91;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.panel {
+    background: #091710;
+    border: 1px solid #245d40;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+h2,
+h3 {
+    color: #35ff91;
+}
+
+.story {
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+button {
+    background: #0b291a;
+    color: #35ff91;
+    border: 1px solid #35ff91;
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #35ff91;
+    color: #041008;
+}
+
+input,
+select {
+    width: 100%;
+    max-width: 400px;
+    padding: 11px;
+    margin: 6px 0;
+    background: #020704;
+    color: white;
+    border: 1px solid #367952;
+    border-radius: 5px;
+}
+
+.question {
+    background: #030805;
+    border: 1px solid #285c42;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.correct {
+    color: #35ff91;
+}
+
+.wrong {
+    color: #ff6464;
+}
+
+.warning {
+    color: #ffd75e;
+}
+
+.info {
+    color: #6db7ff;
+}
+
+.level-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.level {
+    border: 1px solid #254a37;
+    background: #07100b;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.level.current {
+    border-color: #35ff91;
+    box-shadow: 0 0 10px rgba(53,255,145,.25);
+}
+
+.level.completed {
+    color: #35ff91;
+    border-color: #35ff91;
+}
+
+.level.locked {
+    opacity: .35;
+}
+
+.mission {
+    border: 1px solid #294b39;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 7px 0;
+}
+
+.mission.active {
+    border-color: #ffd75e;
+    color: #ffd75e;
+}
+
+.mission.completed {
+    border-color: #35ff91;
+    color: #35ff91;
+}
+
+.progress {
+    height: 14px;
+    background: #111a15;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background: #35ff91;
+    transition: width .4s;
+}
+
+.result {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    background: #020604;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td,
+th {
+    border: 1px solid #28523c;
+    padding: 8px;
+}
+
+th {
+    color: #35ff91;
+}
+
+@media(max-width:1000px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media(max-width:600px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .level-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📊 ACCOUNTING QUEST</h1>
+    <p>12 Levels • Easy → Expert • Learn Accounting Through Gameplay</p>
+</header>
+
+<div class="container">
+
+    <!-- PLAYER STATS -->
+    <div class="stats">
+
+        <div class="stat">
+            LEVEL
+            <span id="level">1</span>
+        </div>
+
+        <div class="stat">
+            XP
+            <span id="xp">0</span>
+        </div>
+
+        <div class="stat">
+            COINS
+            <span id="coins">500</span>
+        </div>
+
+        <div class="stat">
+            REPUTATION
+            <span id="reputation">50</span>
+        </div>
+
+        <div class="stat">
+            MISSIONS
+            <span id="missionCount">0</span>
+        </div>
+
+        <div class="stat">
+            ACCURACY
+            <span id="accuracy">100%</span>
+        </div>
+
+        <div class="stat">
+            RANK
+            <span id="rank">TRAINEE</span>
+        </div>
+
+    </div>
+
+
+    <div class="layout">
+
+        <!-- MAIN -->
+        <main>
+
+            <div class="panel">
+
+                <h2 id="levelTitle">
+                    Level 1 — Accounting Basics
+                </h2>
+
+                <div id="story" class="story">
+                    Welcome to Ledger City.
+
+                    You have been hired as a junior
+                    accounting trainee.
+
+                    Your manager has given you your
+                    first assignment.
+
+                    Complete every mission to unlock
+                    the next level.
+
+                    Good luck, Accountant!
+                </div>
+
+                <div id="startArea">
+                    <button onclick="startLevel()">
+                        ▶ Start Level
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- WORKSPACE -->
+
+            <div class="panel">
+
+                <h2>🧮 Accounting Workspace</h2>
+
+                <div id="workspace">
+                    Start the level to receive your
+                    first accounting mission.
+                </div>
+
+            </div>
+
+
+            <!-- CALCULATOR -->
+
+            <div class="panel">
+
+                <h2>🧮 Accountant Calculator</h2>
+
+                <input
+                    type="text"
+                    id="calculator"
+                    placeholder="Example: 50000 - 20000"
+                >
+
+                <button onclick="calculate()">
+                    Calculate
+                </button>
+
+                <div id="calculatorResult"></div>
+
+            </div>
+
+        </main>
+
+
+        <!-- SIDEBAR -->
+
+        <aside>
+
+            <div class="panel">
+
+                <h3>🏆 Level Campaign</h3>
+
+                <div id="levels" class="level-list"></div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h3>🎯 Missions</h3>
+
+                <div id="missions"></div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h3>📈 Level Progress</h3>
+
+                <div class="progress">
+                    <div
+                        id="progressBar"
+                        class="progress-bar">
+                    </div>
+                </div>
+
+                <p id="progressText">
+                    0 / 0 completed
+                </p>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h3>🏅 Achievements</h3>
+
+                <div id="achievements">
+                    No achievements yet.
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <button onclick="saveGame()">
+                    💾 Save Game
+                </button>
+
+                <button onclick="resetGame()">
+                    🔄 Reset Game
+                </button>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   LEVEL DATABASE
+===================================================== */
+
+const levels = [
+
+{
+    name: "ACCOUNTING BASICS",
+    difficulty: "🟢 EASY",
+
+    story: `
+You are beginning your career at Ledger City Accounting.
+
+Your first job is to understand the foundation of accounting.
+
+Learn:
+
+• Assets
+• Liabilities
+• Equity
+• Revenue
+• Expenses
+
+Your manager will not allow you to advance
+until every mission is completed.
+`,
+
+    missions: [
+
+        {
+            name: "Accounting Equation",
+            type: "number",
+            question: `
+Assets = $50,000
+Liabilities = $20,000
+
+Calculate Equity.
+
+Formula:
+Assets − Liabilities = Equity
+`,
+            answer: 30000,
+            xp: 100
+        },
+
+        {
+            name: "Identify an Asset",
+            type: "choice",
+            question: `
+The company owns office equipment worth $15,000.
+
+What is it?
+`,
+            options: [
+                "Asset",
+                "Liability",
+                "Expense",
+                "Revenue"
+            ],
+            answer: "Asset",
+            xp: 100
+        },
+
+        {
+            name: "Identify a Liability",
+            type: "choice",
+            question: `
+The company owes the bank $25,000.
+
+What is this?
+`,
+            options: [
+                "Asset",
+                "Liability",
+                "Revenue",
+                "Equity"
+            ],
+            answer: "Liability",
+            xp: 100
+        }
+
+    ]
+},
+
+
+{
+    name: "DEBITS & CREDITS",
+    difficulty: "🟢 EASY",
+
+    story: `
+You now understand the accounting equation.
+
+Next you must learn double-entry accounting.
+
+Every transaction has at least:
+
+One Debit
+One Credit
+
+And total debits must equal total credits.
+`,
+
+    missions: [
+
+        {
+            name: "Buy Equipment",
+            type: "journal",
+            question: `
+The company buys equipment for $5,000 cash.
+
+Which accounts should be used?
+`,
+            debit: "Equipment",
+            credit: "Cash",
+            xp: 150
+        },
+
+        {
+            name: "Owner Investment",
+            type: "journal",
+            question: `
+The owner invests $10,000 cash into the business.
+`,
+            debit: "Cash",
+            credit: "Owner's Capital",
+            xp: 150
+        },
+
+        {
+            name: "Pay Rent",
+            type: "journal",
+            question: `
+The company pays $800 rent in cash.
+`,
+            debit: "Rent Expense",
+            credit: "Cash",
+            xp: 150
+        }
+
+    ]
+},
+
+
+{
+    name: "GENERAL LEDGER",
+    difficulty: "🟢 EASY",
+
+    story: `
+The company has many transactions.
+
+You must post them into the correct ledger
+and calculate account balances.
+`,
+
+    missions: [
+
+        {
+            name: "Cash Ledger",
+            type: "number",
+            question: `
+Cash balance = $10,000
+
+The company receives another $2,000.
+
+What is the new balance?
+`,
+            answer: 12000,
+            xp: 200
+        },
+
+        {
+            name: "Expense Ledger",
+            type: "number",
+            question: `
+Expenses = $4,000
+
+The company records another $1,000 expense.
+
+What is the balance?
+`,
+            answer: 5000,
+            xp: 200
+        },
+
+        {
+            name: "Equity",
+            type: "number",
+            question: `
+Assets = $70,000
+Liabilities = $25,000
+
+Calculate Equity.
+`,
+            answer: 45000,
+            xp: 200
+        }
+
+    ]
+},
+
+
+{
+    name: "TRIAL BALANCE",
+    difficulty: "🟡 MEDIUM",
+
+    story: `
+The accounting team has prepared a trial balance.
+
+Unfortunately, the numbers do not match.
+
+Find the missing amount.
+
+Remember:
+
+Total Debits = Total Credits
+`,
+
+    missions: [
+
+        {
+            name: "Missing Debit",
+            type: "number",
+            question: `
+Debit total = $18,500
+Credit total = $16,300
+
+How much is missing?
+`,
+            answer: 2200,
+            xp: 250
+        },
+
+        {
+            name: "Missing Credit",
+            type: "number",
+            question: `
+Debit total = $29,400
+Credit total = $26,750
+
+How much is missing?
+`,
+            answer: 2650,
+            xp: 250
+        },
+
+        {
+            name: "Balanced Trial Balance",
+            type: "number",
+            question: `
+Debit = $45,000
+Credit = $45,000
+
+What is the difference?
+`,
+            answer: 0,
+            xp: 250
+        }
+
+    ]
+},
+
+
+{
+    name: "ADJUSTING ENTRIES",
+    difficulty: "🟡 MEDIUM",
+
+    story: `
+The accounting period is ending.
+
+You must record adjusting entries for:
+
+• Prepaid expenses
+• Accrued expenses
+• Unearned revenue
+
+Make the correct journal entries.
+`,
+
+    missions: [
+
+        {
+            name: "Prepaid Insurance",
+            type: "journal",
+            question: `
+$2,000 of prepaid insurance has expired.
+`,
+            debit: "Insurance Expense",
+            credit: "Prepaid Insurance",
+            xp: 300
+        },
+
+        {
+            name: "Accrued Salary",
+            type: "journal",
+            question: `
+Employees have earned $3,000 that has not
+yet been paid.
+`,
+            debit: "Salary Expense",
+            credit: "Salary Payable",
+            xp: 300
+        },
+
+        {
+            name: "Earned Revenue",
+            type: "journal",
+            question: `
+$4,000 of previously unearned revenue
+has now been earned.
+`,
+            debit: "Unearned Revenue",
+            credit: "Revenue",
+            xp: 300
+        }
+
+    ]
+},
+
+
+{
+    name: "DEPRECIATION",
+    difficulty: "🟡 MEDIUM",
+
+    story: `
+The company owns several long-term assets.
+
+Calculate straight-line depreciation.
+
+Formula:
+
+(Cost − Salvage Value) ÷ Useful Life
+`,
+
+    missions: [
+
+        {
+            name: "Equipment Depreciation",
+            type: "number",
+            question: `
+Cost = $50,000
+Salvage Value = $5,000
+Useful Life = 5 years
+
+Calculate annual depreciation.
+`,
+            answer: 9000,
+            xp: 350
+        },
+
+        {
+            name: "Machine Depreciation",
+            type: "number",
+            question: `
+Cost = $80,000
+Salvage Value = $8,000
+Useful Life = 8 years
+
+Calculate annual depreciation.
+`,
+            answer: 9000,
+            xp: 350
+        },
+
+        {
+            name: "Vehicle Depreciation",
+            type: "number",
+            question: `
+Cost = $60,000
+Salvage Value = $10,000
+Useful Life = 5 years
+
+Calculate annual depreciation.
+`,
+            answer: 10000,
+            xp: 350
+        }
+
+    ]
+},
+
+
+{
+    name: "INVENTORY",
+    difficulty: "🟠 HARD",
+
+    story: `
+The company sells products.
+
+You must calculate:
+
+Beginning Inventory
+Purchases
+Ending Inventory
+COGS
+Gross Profit
+`,
+
+    missions: [
+
+        {
+            name: "Cost of Goods Sold",
+            type: "number",
+            question: `
+Beginning Inventory = $10,000
+Purchases = $30,000
+Ending Inventory = $12,000
+
+Calculate COGS.
+
+Formula:
+
+Beginning Inventory
++ Purchases
+− Ending Inventory
+`,
+            answer: 28000,
+            xp: 400
+        },
+
+        {
+            name: "Gross Profit",
+            type: "number",
+            question: `
+Sales = $70,000
+COGS = $42,000
+
+Calculate Gross Profit.
+`,
+            answer: 28000,
+            xp: 400
+        },
+
+        {
+            name: "Ending Inventory",
+            type: "number",
+            question: `
+Beginning Inventory = $15,000
+Purchases = $40,000
+COGS = $32,000
+
+Calculate Ending Inventory.
+`,
+            answer: 23000,
+            xp: 400
+        }
+
+    ]
+},
+
+
+{
+    name: "BANK RECONCILIATION",
+    difficulty: "🟠 HARD",
+
+    story: `
+The bank statement does not match the company's books.
+
+You must investigate the differences
+and calculate the adjusted balance.
+`,
+
+    missions: [
+
+        {
+            name: "Bank Reconciliation",
+            type: "number",
+            question: `
+Book balance = $25,000
+Deposit = +$3,000
+Outstanding checks = −$2,000
+Bank fees = −$100
+
+Calculate the adjusted balance.
+`,
+            answer: 25900,
+            xp: 450
+        },
+
+        {
+            name: "Adjusted Book Balance",
+            type: "number",
+            question: `
+Book balance = $30,000
+Interest earned = +$500
+Bank fees = −$100
+
+Calculate adjusted book balance.
+`,
+            answer: 30400,
+            xp: 450
+        },
+
+        {
+            name: "Reconciliation Difference",
+            type: "number",
+            question: `
+Balance A = $45,800
+Balance B = $44,150
+
+Calculate the difference.
+`,
+            answer: 1650,
+            xp: 450
+        }
+
+    ]
+},
+
+
+{
+    name: "PAYROLL",
+    difficulty: "🔴 HARD",
+
+    story: `
+You are now responsible for payroll.
+
+Calculate gross pay, deductions
+and employee net pay.
+`,
+
+    missions: [
+
+        {
+            name: "Employee Net Pay",
+            type: "number",
+            question: `
+Gross pay = $5,000
+Tax = $750
+Insurance = $250
+
+Calculate Net Pay.
+`,
+            answer: 4000,
+            xp: 500
+        },
+
+        {
+            name: "Payroll Tax",
+            type: "number",
+            question: `
+Gross payroll = $8,000
+Tax rate = 12%
+
+Calculate the tax.
+`,
+            answer: 960,
+            xp: 500
+        },
+
+        {
+            name: "Senior Employee Pay",
+            type: "number",
+            question: `
+Gross pay = $7,200
+Tax = $1,080
+Insurance = $320
+
+Calculate Net Pay.
+`,
+            answer: 5800,
+            xp: 500
+        }
+
+    ]
+},
+
+
+{
+    name: "FINANCIAL STATEMENTS",
+    difficulty: "🔴 HARD",
+
+    story: `
+Management needs financial statements.
+
+You must calculate:
+
+Net Income
+Total Assets
+Owner's Equity
+`,
+
+    missions: [
+
+        {
+            name: "Net Income",
+            type: "number",
+            question: `
+Sales = $150,000
+COGS = $60,000
+Operating Expenses = $30,000
+
+Calculate Net Income.
+`,
+            answer: 60000,
+            xp: 600
+        },
+
+        {
+            name: "Total Assets",
+            type: "number",
+            question: `
+Cash = $25,000
+Inventory = $15,000
+Equipment = $60,000
+Other Assets = $10,000
+
+Calculate Total Assets.
+`,
+            answer: 110000,
+            xp: 600
+        },
+
+        {
+            name: "Owner's Equity",
+            type: "number",
+            question: `
+Assets = $180,000
+Liabilities = $70,000
+
+Calculate Owner's Equity.
+`,
+            answer: 110000,
+            xp: 600
+        }
+
+    ]
+},
+
+
+{
+    name: "FINANCIAL ANALYSIS",
+    difficulty: "🔴 VERY HARD",
+
+    story: `
+You have become a senior accounting analyst.
+
+Management wants financial ratios.
+
+Calculate:
+
+Current Ratio
+Gross Margin
+Financial percentages
+`,
+
+    missions: [
+
+        {
+            name: "Current Ratio",
+            type: "number",
+            question: `
+Current Assets = $60,000
+Current Liabilities = $30,000
+
+Calculate the Current Ratio.
+`,
+            answer: 2,
+            xp: 700
+        },
+
+        {
+            name: "Gross Margin",
+            type: "number",
+            question: `
+Sales = $200,000
+COGS = $120,000
+
+Calculate Gross Margin %.
+
+Formula:
+
+(Sales − COGS) ÷ Sales × 100
+`,
+            answer: 40,
+            xp: 700
+        },
+
+        {
+            name: "Debt Ratio",
+            type: "number",
+            question: `
+Total Assets = $200,000
+Total Debt = $80,000
+
+Calculate Debt Ratio %.
+
+Formula:
+
+Debt ÷ Assets × 100
+`,
+            answer: 40,
+            xp: 700
+        }
+
+    ]
+},
+
+
+{
+    name: "THE FINAL AUDIT",
+    difficulty: "👑 EXPERT",
+
+    story: `
+FINAL AUDIT
+
+You have reached the final level.
+
+The company is preparing for a major audit.
+
+The auditors discovered several problems.
+
+You must prove that you understand
+the entire accounting system.
+
+Complete every mission to become
+MASTER ACCOUNTANT.
+`,
+
+    missions: [
+
+        {
+            name: "Final Accounting Equation",
+            type: "number",
+            question: `
+Assets = $500,000
+Liabilities = $215,000
+
+Calculate Equity.
+`,
+            answer: 285000,
+            xp: 1000
+        },
+
+        {
+            name: "Final Inventory",
+            type: "number",
+            question: `
+Beginning Inventory = $50,000
+Purchases = $150,000
+Ending Inventory = $60,000
+
+Calculate COGS.
+`,
+            answer: 140000,
+            xp: 1000
+        },
+
+        {
+            name: "Final Net Income",
+            type: "number",
+            question: `
+Sales = $400,000
+COGS = $140,000
+Expenses = $90,000
+
+Calculate Net Income.
+`,
+            answer: 170000,
+            xp: 1000
+        },
+
+        {
+            name: "Final Current Ratio",
+            type: "number",
+            question: `
+Current Assets = $180,000
+Current Liabilities = $90,000
+
+Calculate Current Ratio.
+`,
+            answer: 2,
+            xp: 1000
+        },
+
+        {
+            name: "Final Trial Balance",
+            type: "number",
+            question: `
+Total Debits = $750,000
+Total Credits = $750,000
+
+What is the difference?
+`,
+            answer: 0,
+            xp: 1200
+        }
+
+    ]
+}
+
+];
+
+
+/* =====================================================
+   GAME STATE
+===================================================== */
+
+let game = {
+    level: 1,
+    xp: 0,
+    coins: 500,
+    reputation: 50,
+
+    missionsCompleted: 0,
+    attempts: 0,
+    correct: 0,
+
+    completedMissions: [],
+    achievements: [],
+
+    playing: false
+};
+
+
+/* =====================================================
+   SAVE
+===================================================== */
+
+function saveGame() {
+
+    localStorage.setItem(
+        "accountingQuestSave",
+        JSON.stringify(game)
+    );
+
+}
+
+
+/* =====================================================
+   LOAD
+===================================================== */
+
+function loadGame() {
+
+    const saved =
+        localStorage.getItem(
+            "accountingQuestSave"
+        );
+
+    if (!saved) return;
+
+    try {
+
+        const parsed =
+            JSON.parse(saved);
+
+        game = {
+            ...game,
+            ...parsed
+        };
+
+    } catch {
+
+        localStorage.removeItem(
+            "accountingQuestSave"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+function resetGame() {
+
+    const confirmReset =
+        confirm(
+            "Are you sure you want to delete all progress?"
+        );
+
+    if (!confirmReset) return;
+
+    localStorage.removeItem(
+        "accountingQuestSave"
+    );
+
+    location.reload();
+
+}
+
+
+/* =====================================================
+   CURRENT LEVEL
+===================================================== */
+
+function getCurrentLevel() {
+
+    return levels[game.level - 1];
+
+}
+
+
+/* =====================================================
+   MISSION ID
+===================================================== */
+
+function missionID(level, mission) {
+
+    return level + "-" + mission;
+
+}
+
+
+/* =====================================================
+   COMPLETED MISSIONS
+===================================================== */
+
+function getCompletedCount() {
+
+    const level =
+        getCurrentLevel();
+
+    let count = 0;
+
+    for (
+        let i = 0;
+        i < level.missions.length;
+        i++
+    ) {
+
+        const id =
+            missionID(game.level, i);
+
+        if (
+            game.completedMissions.includes(id)
+        ) {
+
+            count++;
+
+        } else {
+
+            break;
+
+        }
+
+    }
+
+    return count;
+
+}
+
+
+/* =====================================================
+   START LEVEL
+===================================================== */
+
+function startLevel() {
+
+    game.playing = true;
+
+    const level =
+        getCurrentLevel();
+
+    document
+        .getElementById("levelTitle")
+        .textContent =
+        "Level " +
+        game.level +
+        " — " +
+        level.name;
+
+    document
+        .getElementById("story")
+        .textContent =
+        level.story;
+
+    document
+        .getElementById("startArea")
+        .innerHTML = "";
+
+    showMission();
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   SHOW MISSION
+===================================================== */
+
+function showMission() {
+
+    const level =
+        getCurrentLevel();
+
+    const index =
+        getCompletedCount();
+
+    if (
+        index >= level.missions.length
+    ) {
+
+        completeCurrentLevel();
+
+        return;
+
+    }
+
+    const mission =
+        level.missions[index];
+
+    let html = `
+
+        <div class="question">
+
+            <h3>
+                🎯 Mission ${index + 1}
+            </h3>
+
+            <h3>
+                ${mission.name}
+            </h3>
+
+            <p style="white-space:pre-line;">
+                ${mission.question}
+            </p>
+
+    `;
+
+
+    /* NUMBER QUESTION */
+
+    if (mission.type === "number") {
+
+        html += `
+
+            <input
+                id="answer"
+                type="number"
+                step="any"
+                placeholder="Enter your answer"
+            >
+
+            <br>
+
+            <button onclick="submitNumber()">
+                Submit Answer
+            </button>
+
+        `;
+
+    }
+
+
+    /* CHOICE QUESTION */
+
+    if (mission.type === "choice") {
+
+        mission.options.forEach(option => {
+
+            html += `
+
+                <button
+                    onclick='submitChoice(${JSON.stringify(option)})'>
+                    ${option}
+                </button>
+
+            `;
+
+        });
+
+    }
+
+
+    /* JOURNAL QUESTION */
+
+    if (mission.type === "journal") {
+
+        const accounts = [
+            "Cash",
+            "Equipment",
+            "Rent Expense",
+            "Insurance Expense",
+            "Salary Expense",
+            "Salary Payable",
+            "Prepaid Insurance",
+            "Unearned Revenue",
+            "Revenue",
+            "Owner's Capital"
+        ];
+
+        html += `
+
+            <p>
+                Select the correct debit and credit.
+            </p>
+
+            <label>Debit:</label>
+
+            <select id="debit">
+
+                <option value="">
+                    Select account
+                </option>
+
+                ${accounts.map(account =>
+                    `<option>${account}</option>`
+                ).join("")}
+
+            </select>
+
+            <br>
+
+            <label>Credit:</label>
+
+            <select id="credit">
+
+                <option value="">
+                    Select account
+                </option>
+
+                ${accounts.map(account =>
+                    `<option>${account}</option>`
+                ).join("")}
+
+            </select>
+
+            <br>
+
+            <button onclick="submitJournal()">
+                Post Journal Entry
+            </button>
+
+        `;
+
+    }
+
+    html += `
+        </div>
+    `;
+
+    document
+        .getElementById("workspace")
+        .innerHTML = html;
+
+}
+
+
+/* =====================================================
+   NUMBER ANSWER
+===================================================== */
+
+function submitNumber() {
+
+    const input =
+        document.getElementById("answer");
+
+    if (!input) return;
+
+    const value =
+        Number(input.value);
+
+    if (
+        input.value.trim() === ""
+    ) {
+
+        showMessage(
+            "Please enter an answer.",
+            "warning"
+        );
+
+        return;
+
+    }
+
+    const mission =
+        getCurrentLevel()
+            .missions[getCompletedCount()];
+
+    game.attempts++;
+
+    if (
+        Math.abs(
+            value - mission.answer
+        ) < 0.001
+    ) {
+
+        correctAnswer();
+
+    } else {
+
+        wrongAnswer(
+            "Not correct. Review the formula and try again."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CHOICE
+===================================================== */
+
+function submitChoice(value) {
+
+    const mission =
+        getCurrentLevel()
+            .missions[getCompletedCount()];
+
+    game.attempts++;
+
+    if (
+        value === mission.answer
+    ) {
+
+        correctAnswer();
+
+    } else {
+
+        wrongAnswer(
+            "That is not the correct classification."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   JOURNAL
+===================================================== */
+
+function submitJournal() {
+
+    const debit =
+        document.getElementById("debit").value;
+
+    const credit =
+        document.getElementById("credit").value;
+
+    if (!debit || !credit) {
+
+        showMessage(
+            "Select both a debit and a credit.",
+            "warning"
+        );
+
+        return;
+
+    }
+
+    const mission =
+        getCurrentLevel()
+            .missions[getCompletedCount()];
+
+    game.attempts++;
+
+    if (
+        debit === mission.debit &&
+        credit === mission.credit
+    ) {
+
+        correctAnswer();
+
+    } else {
+
+        wrongAnswer(
+            "Think about which account increases and which account decreases."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CORRECT ANSWER
+===================================================== */
+
+function correctAnswer() {
+
+    const level =
+        getCurrentLevel();
+
+    const index =
+        getCompletedCount();
+
+    const mission =
+        level.missions[index];
+
+    const id =
+        missionID(game.level, index);
+
+    if (
+        game.completedMissions.includes(id)
+    ) {
+
+        return;
+
+    }
+
+    game.completedMissions.push(id);
+
+    game.xp += mission.xp;
+
+    game.coins += 100;
+
+    game.reputation += 2;
+
+    game.missionsCompleted++;
+
+    game.correct++;
+
+    showMessage(
+        `
+        <strong>✓ CORRECT!</strong><br><br>
+        +${mission.xp} XP<br>
+        +100 Coins<br>
+        +2 Reputation
+        `,
+        "correct"
+    );
+
+    checkAchievements();
+
+    saveGame();
+
+    updateUI();
+
+    setTimeout(() => {
+
+        showMission();
+
+    }, 800);
+
+}
+
+
+/* =====================================================
+   WRONG ANSWER
+===================================================== */
+
+function wrongAnswer(message) {
+
+    game.reputation =
+        Math.max(
+            0,
+            game.reputation - 1
+        );
+
+    showMessage(
+        `
+        <strong>✗ Incorrect</strong><br><br>
+        ${message}<br><br>
+        Try again.
+        `,
+        "wrong"
+    );
+
+    updateUI();
+
+    saveGame();
+
+}
+
+
+/* =====================================================
+   COMPLETE LEVEL
+===================================================== */
+
+function completeCurrentLevel() {
+
+    game.playing = false;
+
+    const oldLevel =
+        game.level;
+
+    if (oldLevel >= levels.length) {
+
+        finishGame();
+
+        return;
+
+    }
+
+    game.coins += 500;
+
+    game.reputation += 10;
+
+    saveGame();
+
+    document
+        .getElementById("workspace")
+        .innerHTML = `
+
+        <div class="question">
+
+            <h2 class="correct">
+                🎉 LEVEL ${oldLevel} COMPLETE!
+            </h2>
+
+            <p>
+                You completed every mission
+                in this level.
+            </p>
+
+            <p>
+                +500 bonus coins
+            </p>
+
+            <p>
+                +10 reputation
+            </p>
+
+            <button onclick="nextLevel()">
+                🔓 UNLOCK NEXT LEVEL
+            </button>
+
+        </div>
+
+        `;
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   NEXT LEVEL
+===================================================== */
+
+function nextLevel() {
+
+    if (
+        game.level >= levels.length
+    ) {
+
+        finishGame();
+
+        return;
+
+    }
+
+    game.level++;
+
+    game.playing = false;
+
+    const level =
+        getCurrentLevel();
+
+    document
+        .getElementById("levelTitle")
+        .textContent =
+        "Level " +
+        game.level +
+        " — " +
+        level.name;
+
+    document
+        .getElementById("story")
+        .textContent =
+        level.story;
+
+    document
+        .getElementById("startArea")
+        .innerHTML = `
+
+        <button onclick="startLevel()">
+            ▶ Start Level ${game.level}
+        </button>
+
+    `;
+
+    document
+        .getElementById("workspace")
+        .innerHTML = `
+            Start the level when you are ready.
+        `;
+
+    saveGame();
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   FINAL GAME
+===================================================== */
+
+function finishGame() {
+
+    game.playing = false;
+
+    document
+        .getElementById("levelTitle")
+        .textContent =
+        "🏆 MASTER ACCOUNTANT";
+
+    document
+        .getElementById("story")
+        .textContent = `
+
+CONGRATULATIONS!
+
+You completed all 12 levels.
+
+You have progressed from:
+
+ACCOUNTING TRAINEE
+
+to
+
+MASTER ACCOUNTANT.
+
+You mastered:
+
+✓ Accounting basics
+✓ Debits and credits
+✓ General ledger
+✓ Trial balance
+✓ Adjusting entries
+✓ Depreciation
+✓ Inventory
+✓ Bank reconciliation
+✓ Payroll
+✓ Financial statements
+✓ Financial analysis
+✓ Final audit
+
+Your final statistics:
+
+XP: ${game.xp}
+Missions: ${game.missionsCompleted}
+Accuracy: ${getAccuracy()}%
+Reputation: ${game.reputation}
+
+`;
+
+    document
+        .getElementById("startArea")
+        .innerHTML = `
+            <button onclick="resetGame()">
+                🔄 Start New Career
+            </button>
+        `;
+
+    document
+        .getElementById("workspace")
+        .innerHTML = `
+
+        <div class="question">
+
+            <h2 class="correct">
+                👑 MASTER ACCOUNTANT
+            </h2>
+
+            <p>
+                You completed the entire campaign.
+            </p>
+
+            <p>
+                Your accounting career is complete!
+            </p>
+
+        </div>
+
+        `;
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(message, type) {
+
+    const old =
+        document.getElementById("resultMessage");
+
+    if (old) old.remove();
+
+    const box =
+        document.createElement("div");
+
+    box.id = "resultMessage";
+
+    box.className =
+        "result " + type;
+
+    box.innerHTML =
+        message;
+
+    document
+        .getElementById("workspace")
+        .prepend(box);
+
+}
+
+
+/* =====================================================
+   LEVEL DISPLAY
+===================================================== */
+
+function renderLevels() {
+
+    let html = "";
+
+    levels.forEach((level, index) => {
+
+        const number =
+            index + 1;
+
+        const completed =
+            number < game.level;
+
+        const current =
+            number === game.level;
+
+        const locked =
+            number > game.level;
+
+        let className =
+            "level";
+
+        if (completed)
+            className += " completed";
+
+        if (current)
+            className += " current";
+
+        if (locked)
+            className += " locked";
+
+        html += `
+
+            <div class="${className}">
+
+                <strong>
+                    ${completed ? "✓" : locked ? "🔒" : "▶"}
+                    Level ${number}
+                </strong>
+
+                <br>
+
+                ${level.name}
+
+                <br>
+
+                <small>
+                    ${level.difficulty}
+                </small>
+
+            </div>
+
+        `;
+
+    });
+
+    document
+        .getElementById("levels")
+        .innerHTML = html;
+
+}
+
+
+/* =====================================================
+   MISSION DISPLAY
+===================================================== */
+
+function renderMissions() {
+
+    const level =
+        getCurrentLevel();
+
+    const completed =
+        getCompletedCount();
+
+    let html = "";
+
+    level.missions.forEach(
+        (mission, index) => {
+
+            const id =
+                missionID(
+                    game.level,
+                    index
+                );
+
+            const done =
+                game.completedMissions
+                    .includes(id);
+
+            let className =
+                "mission";
+
+            if (done)
+                className += " completed";
+
+            if (
+                index === completed &&
+                !done
+            )
+                className += " active";
+
+            html += `
+
+                <div class="${className}">
+
+                    ${done ? "✓" : index === completed ? "▶" : "🔒"}
+
+                    ${mission.name}
+
+                    <br>
+
+                    <small>
+                        ${done
+                            ? "Completed"
+                            : index === completed
+                            ? "Current Mission"
+                            : "Locked"
+                        }
+                    </small>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+    document
+        .getElementById("missions")
+        .innerHTML = html;
+
+}
+
+
+/* =====================================================
+   PROGRESS
+===================================================== */
+
+function renderProgress() {
+
+    const level =
+        getCurrentLevel();
+
+    const total =
+        level.missions.length;
+
+    const completed =
+        getCompletedCount();
+
+    const percentage =
+        total === 0
+        ? 0
+        : (completed / total) * 100;
+
+    document
+        .getElementById("progressBar")
+        .style.width =
+        percentage + "%";
+
+    document
+        .getElementById("progressText")
+        .textContent =
+        completed +
+        " / " +
+        total +
+        " missions completed";
+
+}
+
+
+/* =====================================================
+   ACCURACY
+===================================================== */
+
+function getAccuracy() {
+
+    if (
+        game.attempts === 0
+    ) {
+
+        return 100;
+
+    }
+
+    return Math.round(
+        (
+            game.correct /
+            game.attempts
+        ) * 100
+    );
+
+}
+
+
+/* =====================================================
+   RANK
+===================================================== */
+
+function getRank() {
+
+    if (game.level >= 12)
+        return "MASTER";
+
+    if (game.level >= 10)
+        return "CFO";
+
+    if (game.level >= 8)
+        return "SENIOR";
+
+    if (game.level >= 6)
+        return "ANALYST";
+
+    if (game.level >= 4)
+        return "ACCOUNTANT";
+
+    if (game.level >= 2)
+        return "JUNIOR";
+
+    return "TRAINEE";
+
+}
+
+
+/* =====================================================
+   ACHIEVEMENTS
+===================================================== */
+
+function checkAchievements() {
+
+    const achievementList = [
+
+        {
+            name: "First Mission",
+            condition: game.missionsCompleted >= 1
+        },
+
+        {
+            name: "Accounting Apprentice",
+            condition: game.level >= 3
+        },
+
+        {
+            name: "Trial Balance Specialist",
+            condition: game.level >= 5
+        },
+
+        {
+            name: "Depreciation Specialist",
+            condition: game.level >= 6
+        },
+
+        {
+            name: "Inventory Specialist",
+            condition: game.level >= 7
+        },
+
+        {
+            name: "Payroll Specialist",
+            condition: game.level >= 9
+        },
+
+        {
+            name: "Financial Analyst",
+            condition: game.level >= 11
+        },
+
+        {
+            name: "Master Accountant",
+            condition: game.level >= 12
+        }
+
+    ];
+
+
+    achievementList.forEach(
+        achievement => {
+
+            if (
+                achievement.condition &&
+                !game.achievements.includes(
+                    achievement.name
+                )
+            ) {
+
+                game.achievements.push(
+                    achievement.name
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   RENDER ACHIEVEMENTS
+===================================================== */
+
+function renderAchievements() {
+
+    const element =
+        document.getElementById(
+            "achievements"
+        );
+
+    if (
+        game.achievements.length === 0
+    ) {
+
+        element.innerHTML =
+            "No achievements yet.";
+
+        return;
+
+    }
+
+    element.innerHTML =
+        game.achievements
+            .map(
+                achievement =>
+                    "🏆 " + achievement
+            )
+            .join("<br>");
+
+}
+
+
+/* =====================================================
+   UPDATE UI
+===================================================== */
+
+function updateUI() {
+
+    document
+        .getElementById("level")
+        .textContent =
+        game.level;
+
+    document
+        .getElementById("xp")
+        .textContent =
+        game.xp;
+
+    document
+        .getElementById("coins")
+        .textContent =
+        game.coins;
+
+    document
+        .getElementById("reputation")
+        .textContent =
+        game.reputation;
+
+    document
+        .getElementById("missionCount")
+        .textContent =
+        game.missionsCompleted;
+
+    document
+        .getElementById("accuracy")
+        .textContent =
+        getAccuracy() + "%";
+
+    document
+        .getElementById("rank")
+        .textContent =
+        getRank();
+
+    renderLevels();
+
+    renderMissions();
+
+    renderProgress();
+
+    renderAchievements();
+
+}
+
+
+/* =====================================================
+   CALCULATOR
+===================================================== */
+
+function calculate() {
+
+    const input =
+        document
+            .getElementById("calculator")
+            .value
+            .trim();
+
+    const output =
+        document
+            .getElementById(
+                "calculatorResult"
+            );
+
+    if (!input) {
+
+        output.innerHTML =
+            `<p class="warning">
+                Enter a calculation.
+            </p>`;
+
+        return;
+
+    }
+
+
+    /*
+       Only allow basic arithmetic.
+       This prevents arbitrary JavaScript
+       from being entered into the calculator.
+    */
+
+    if (
+        !/^[0-9+\-*/().\s]+$/.test(input)
+    ) {
+
+        output.innerHTML =
+            `<p class="wrong">
+                Invalid calculation.
+            </p>`;
+
+        return;
+
+    }
+
+
+    try {
+
+        const result =
+            Function(
+                '"use strict"; return (' +
+                input +
+                ')'
+            )();
+
+        if (
+            typeof result !== "number" ||
+            !Number.isFinite(result)
+        ) {
+
+            throw new Error();
+
+        }
+
+        output.innerHTML =
+            `<p class="correct">
+                Result: <strong>${result}</strong>
+            </p>`;
+
+    } catch {
+
+        output.innerHTML =
+            `<p class="wrong">
+                Invalid calculation.
+            </p>`;
+
+    }
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+loadGame();
+
+checkAchievements();
+
+updateUI();
+
+
+/*
+   If player has already completed
+   the campaign, show final screen.
+*/
+
+if (
+    game.level === 12 &&
+    game.completedMissions >=
+    levels[11].missions.length +
+    levels
+        .slice(0, 11)
+        .reduce(
+            (total, level) =>
+                total + level.missions.length,
+            0
+        )
+) {
+
+    finishGame();
+
+}
+
+</script>
+
+</body>
+</html>
